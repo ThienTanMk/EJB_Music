@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package model;
+package dao;
 
-import entity.User;
+import entity.Track;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -13,19 +13,19 @@ import java.util.List;
  * @author admin
  */
 @Local
-public interface UserFacadeLocal {
+public interface TrackFacadeLocal {
 
-    void create(User user);
+    void create(Track track);
 
-    void edit(User user);
+    void edit(Track track);
 
-    void remove(User user);
+    void remove(Track track);
 
-    User find(Object id);
+    Track find(Object id);
 
-    List<User> findAll();
+    List<Track> findAll();
 
-    List<User> findRange(int[] range);
+    List<Track> findRange(int[] range);
 
     int count();
     

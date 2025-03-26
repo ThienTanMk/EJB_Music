@@ -18,6 +18,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -72,11 +73,13 @@ public class Track implements Serializable {
         this.id = id;
     }
 
-    public Track(String id, String title, String filename, Date createdat) {
-        this.id = id;
+    public Track(String title, String desciption, String filename, Date createdat, String imagename) {
+        this.id = generateID();
         this.title = title;
+        this.desciption = desciption;
         this.filename = filename;
         this.createdat = createdat;
+        this.imagename = imagename;
     }
 
     public String getId() {
@@ -151,5 +154,7 @@ public class Track implements Serializable {
     public String toString() {
         return "entity.Track[ id=" + id + " ]";
     }
-    
+    public static String generateID() {
+        return UUID.randomUUID().toString(); // VD: "550e8400-e29b-41d4-a716-446655440000"
+    }
 }
