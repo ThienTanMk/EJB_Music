@@ -14,10 +14,13 @@
     </head>
     <body class="bg-gray-100 py-10">
         <div class="container mx-auto max-w-2xl bg-white p-6 shadow-md rounded-lg">
-        <h2 class="text-2xl font-bold mb-2">Add New Music</h2>
+            <div class="flex justify-between">
+                <h2 class="text-2xl font-bold mb-2">Add New Music</h2>
+                <a href = "home" class="bg-black px-6 py-2 text-white rounded-lg">Back</a>
+            </div>
         <p class="text-gray-600 mb-4">Upload your music track with details and cover image</p>
         
-        <form action="upload" method="post" enctype="multipart/form-data" class="space-y-6">
+        <form action="add" method="post" enctype="multipart/form-data" class="space-y-6">
             <div>
                 <label for="title" class="block font-medium">Title</label>
                 <input type="text" id="title" name="title" class="w-full p-2 border rounded" placeholder="Enter music title" required>

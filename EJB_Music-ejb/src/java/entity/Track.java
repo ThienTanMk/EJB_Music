@@ -8,6 +8,8 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
@@ -31,7 +33,7 @@ import java.util.UUID;
     @NamedQuery(name = "Track.findAll", query = "SELECT t FROM Track t"),
     @NamedQuery(name = "Track.findById", query = "SELECT t FROM Track t WHERE t.id = :id"),
     @NamedQuery(name = "Track.findByTitle", query = "SELECT t FROM Track t WHERE t.title = :title"),
-    @NamedQuery(name = "Track.findByDesciption", query = "SELECT t FROM Track t WHERE t.desciption = :desciption"),
+    @NamedQuery(name = "Track.findByDescription", query = "SELECT t FROM Track t WHERE t.description = :description"),
     @NamedQuery(name = "Track.findByFilename", query = "SELECT t FROM Track t WHERE t.filename = :filename"),
     @NamedQuery(name = "Track.findByCreatedat", query = "SELECT t FROM Track t WHERE t.createdat = :createdat"),
     @NamedQuery(name = "Track.findByImagename", query = "SELECT t FROM Track t WHERE t.imagename = :imagename")})
@@ -50,8 +52,8 @@ public class Track implements Serializable {
     @Column(name = "Title")
     private String title;
     @Size(max = 2147483647)
-    @Column(name = "Desciption")
-    private String desciption;
+    @Column(name = "Description")
+    private String description;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -65,6 +67,9 @@ public class Track implements Serializable {
     @Size(max = 100)
     @Column(name = "Image_name")
     private String imagename;
+    @JoinColumn(name = "User_id", referencedColumnName = "Id")
+    @ManyToOne(optional = false)
+    private User userid;
 
     public Track() {
     }
@@ -73,13 +78,14 @@ public class Track implements Serializable {
         this.id = id;
     }
 
-    public Track(String title, String desciption, String filename, Date createdat, String imagename) {
+    public Track(String title,String description, String filename, Date createdat, String imageName) {
         this.id = generateID();
         this.title = title;
-        this.desciption = desciption;
         this.filename = filename;
         this.createdat = createdat;
-        this.imagename = imagename;
+        this.imagename=imageName;
+        this.description = description;
+        this.userid = new User("user1");
     }
 
     public String getId() {
@@ -98,12 +104,12 @@ public class Track implements Serializable {
         this.title = title;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getFilename() {
@@ -130,6 +136,14 @@ public class Track implements Serializable {
         this.imagename = imagename;
     }
 
+    public User getUserid() {
+        return userid;
+    }
+
+    public void setUserid(User userid) {
+        this.userid = userid;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -154,7 +168,8 @@ public class Track implements Serializable {
     public String toString() {
         return "entity.Track[ id=" + id + " ]";
     }
+    
     public static String generateID() {
-        return UUID.randomUUID().toString(); // VD: "550e8400-e29b-41d4-a716-446655440000"
+        return UUID.randomUUID().toString();
     }
 }

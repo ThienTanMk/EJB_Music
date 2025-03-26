@@ -5,23 +5,27 @@
 package entity;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 @Entity
-@Table(name = "User")
+@Table(name = "[User]")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
@@ -47,6 +51,8 @@ public class User implements Serializable {
     @Size(min = 1, max = 200)
     @Column(name = "Password")
     private String password;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userid")
+    private List<Track> trackList;
 
     public User() {
     }
@@ -83,6 +89,15 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @XmlTransient
+    public List<Track> getTrackList() {
+        return trackList;
+    }
+
+    public void setTrackList(List<Track> trackList) {
+        this.trackList = trackList;
     }
 
     @Override
