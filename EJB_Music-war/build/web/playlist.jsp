@@ -7,13 +7,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Danh Sách Nhạc</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body class="bg-gray-100 text-black">
         <div class="max-w-4xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
             <!-- Header -->
-            <div class="p-4 border-b border-gray-200 flex items-center gap-2">
-                <i class="fa-solid fa-music"></i>
-                <h1 class="text-2xl font-semibold">Danh Sách Nhạc</h1>
+            <div class="p-4 border-b border-gray-200 flex items-center  gap-138">
+<!--                <i class="fa-solid fa-music"></i>-->
+                <h1 class="text-2xl font-semibold ">Danh Sách Nhạc</h1>
+                <div>
+                    <a href="/EJB_Music-war/add" class="cursor-pointer justify-between text-lg font-semibold bg-green-500 text-white px-3 py-3 rounded-lg hover:bg-blue-500 flex items-center gap-2">
+                        Thêm bài hát
+                    </a>
+                </div>
             </div>
 
             <!-- Hiển thị bài hát đang phát -->
@@ -23,7 +29,6 @@
                          class="h-16 w-16 rounded-md object-cover">
                     <div>
                         <h3 id="song-title" class="text-lg font-semibold">Chọn bài hát để phát</h3>
-                        <p id="song-artist" class="text-sm text-gray-600"></p>
                     </div>
                 </div>
 
@@ -69,7 +74,7 @@
                                 <th class="p-2">Bài hát</th>
                                 <th class="p-2">Mô tả</th>
                                 <th class="p-2">Ngày tạo</th>
-                                <th class="p-2">Hiệu chỉnh</th>
+                                <th class="p-2">Chỉnh Sửa</th>
                                 <th class="p-2">Xóa</th>
                             </tr>
                         </thead>
@@ -90,15 +95,17 @@
                                     <td class="p-2">
                                         <fmt:formatDate value="${track.createdat}" pattern="dd/MM/yyyy HH:mm"/>
                                     </td>
-                                    <td class="p-2">
-                                        <button onclick="editSong('${track.id}')" class="text-blue-500 hover:text-blue-700">
-                                            📝 Sửa
-                                        </button>
+                                    <td class="p-2 items-center">
+                                        <a href="/EJB_Music-war/update?id=${track.id}" class="cursor-pointer text-blue-500 hover:text-blue-800">
+                                            📝 Chỉnh Sửa
+                                        </a>
                                     </td>
                                     <td class="p-2">
-                                        <form action="delete" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
+                                        <form id="deleteForm-${track.id}" action="delete" method="post">
                                             <input type="hidden" name="id" value="${track.id}">
-                                            <button type="submit">🗑</button>
+                                            <button class ="cursor-pointer" type="button" onclick="confirmDelete('${track.id}')">
+                                                🗑️
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -116,6 +123,7 @@
         </audio>
 
         <script>
+
             let currentIndex = -1;
             let isPlaying = false;
             let tracks = [];
@@ -129,38 +137,38 @@
                         cover: "${pageContext.request.contextPath}/assets/images/${track.imagename}"
                             });
             </c:forEach>
-            const audio = document.getElementById("audio-player");
-            const source = document.getElementById("audio-source");
-            const playBtn = document.getElementById("play-btn");
-            const progressBar = document.getElementById("progress-bar");
-            const songTitle = document.getElementById("song-title");
-            const songCover = document.getElementById("song-cover");
+                            const audio = document.getElementById("audio-player");
+                            const source = document.getElementById("audio-source");
+                            const playBtn = document.getElementById("play-btn");
+                            const progressBar = document.getElementById("progress-bar");
+                            const songTitle = document.getElementById("song-title");
+                            const songCover = document.getElementById("song-cover");
 
-            function playSong(id, src, title, cover) {
-                currentIndex = tracks.findIndex(track => track.id === id);
-                if (currentIndex === -1) {
-                    console.error("Không tìm thấy bài hát!");
-                     return;
-                }
-                // Cập nhật thông tin bài hát
-                songTitle.textContent = title;
-                songCover.src = cover;
-                // Đặt lại thanh trượt & thời gian
-                progressBar.value = 0;
-                audio.currentTime = 0;
-                // Cập nhật nguồn và phát nhạc
-                source.src = src;
-                audio.load();
-                audio.play().then(() => {
-                    isPlaying = true;
-                    playBtn.innerText = "⏸️";
-                }).catch(error => {
-                    console.error("Lỗi phát nhạc:", error);
-                    });
-            }
-            function togglePlay() {
-                if (tracks.length === 0)
-                return;
+                            function playSong(id, src, title, cover) {
+                                currentIndex = tracks.findIndex(track => track.id === id);
+                                if (currentIndex === -1) {
+                                    console.error("Không tìm thấy bài hát!");
+                                    return;
+                                }
+                                // Cập nhật thông tin bài hát
+                                songTitle.textContent = title;
+                                songCover.src = cover;
+                                // Đặt lại thanh trượt & thời gian
+                                progressBar.value = 0;
+                                audio.currentTime = 0;
+                                // Cập nhật nguồn và phát nhạc
+                                source.src = src;
+                                audio.load();
+                                audio.play().then(() => {
+                                    isPlaying = true;
+                                    playBtn.innerText = "⏸️";
+                                }).catch(error => {
+                                    console.error("Lỗi phát nhạc:", error);
+                                });
+                            }
+                            function togglePlay() {
+                                if (tracks.length === 0)
+                                    return;
                                 if (currentIndex === -1) {
                                     playSong(tracks[0].id, tracks[0].src, tracks[0].title, tracks[0].cover);
                                     return;
@@ -187,8 +195,8 @@
                                         tracks[currentIndex].title, tracks[currentIndex].cover);
                             }
 
-            function playPrevious() {
-                if (tracks.length === 0)
+                            function playPrevious() {
+                                if (tracks.length === 0)
                                     return;
                                 currentIndex = (currentIndex - 1 + tracks.length) % tracks.length; // Lùi bài và lặp lại
                                 playSong(tracks[currentIndex].id, tracks[currentIndex].src,
@@ -211,6 +219,23 @@
                                     audio.currentTime = (progressBar.value / 100) * audio.duration;
                                 }
                             });
+                            function confirmDelete(trackId) {
+                                Swal.fire({
+                                    title: "Bạn có chắc chắn muốn xóa?",
+                                    text: "Hành động này không thể hoàn tác!",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Xóa",
+                                    cancelButtonText: "Hủy"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Nếu người dùng bấm "Xóa", submit form
+                                        document.getElementById("deleteForm-" + trackId).submit();
+                                    }
+                                });
+                            }
         </script>
     </body>
 </html>

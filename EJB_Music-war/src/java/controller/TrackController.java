@@ -19,9 +19,11 @@ import java.nio.file.Paths;
 import java.util.Date;
 import dao.TrackFacadeLocal;
 import dao.UserFacadeLocal;
+import entity.User;
+import java.util.List;
 import service.FileServiceLocal;
 
-@WebServlet(name = "TrackController", urlPatterns = {"/home", "/add","/update"})
+@WebServlet(name = "TrackController", urlPatterns = {"/home", "/add", "/update", "/delete"})
 @MultipartConfig
 public class TrackController extends HttpServlet {
 
@@ -34,7 +36,6 @@ public class TrackController extends HttpServlet {
     @EJB
     private TrackFacadeLocal trackFacade;
 
-    
 //    private String uploadDir = getServletContext().getRealPath("") + "\\assets\\images";
     // Xử lý yêu cầu chung
     protected void home(HttpServletRequest request, HttpServletResponse response)
@@ -49,40 +50,46 @@ public class TrackController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getServletPath();
         System.out.println(action);
-        if(action.equals("/home")){
-            home(request, response);
-        }
-        else if ("/add".equals(action)) {
+        if (action.equals("/home")) {
+            // Lấy danh sách nhạc từ cơ sở dữ liệu
+            List<Track> trackList = trackFacade.findAll();
+            request.setAttribute("trackList", trackList);
+
+            // Chuyển hướng sang trang playlist.jsp
+            request.getRequestDispatcher("playlist.jsp").forward(request, response);
+        } else if ("/add".equals(action)) {
             request.getRequestDispatcher("add-music.jsp").forward(request, response);
-        }
-        else{
+        } else if ("/update".equals(action)) {
             getUpdatePage(request, response);
         }
     }
-    
-    private void addTrack(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+
+    private void addTrack(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String title = request.getParameter("title");
         String description = request.getParameter("description");
         Part musicPart = request.getPart("musicFile");
         Part imagePart = request.getPart("imageFile");
         String uploadDir = getServletContext().getRealPath("") + "\\assets\\images";
         // Lấy tên file từ phần upload
-        String musicFileName = fileService.saveFile(musicPart,uploadDir);
-        String imageFileName = fileService.saveFile(imagePart,uploadDir);
+        String musicFileName = fileService.saveFile(musicPart, uploadDir);
+        String imageFileName = fileService.saveFile(imagePart, uploadDir);
 
-       
         // 3️⃣ Tạo Model `MusicTrack` để lưu dữ liệu
         Track track = new Track(title, description, musicFileName, new Date(), imageFileName);
         System.out.print(track);
+        User user = userFacade.find("user1");
+        if (user == null) {
+            throw new IllegalStateException("User with ID 'user1' not found.");
+        }
+        track.setUserid(user);
         this.trackFacade.create(track);
         // 4️⃣ Gửi model sang JSP để hiển thị
         request.setAttribute("track", track);
         request.getRequestDispatcher("update_music.jsp").forward(request, response);
     }
-    
-    private void getUpdatePage(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
-//        String id = request.getParameter("id");
-        String id = "b361168e-0346-4624-a007-c681778321c9";
+
+    private void getUpdatePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
 
         if (id != null && !id.isEmpty()) {
             try {
@@ -102,7 +109,8 @@ public class TrackController extends HttpServlet {
 
         request.getRequestDispatcher("update_music.jsp").forward(request, response);
     }
-    private void updateTrack(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+
+    private void updateTrack(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
         String title = request.getParameter("title");
         String description = request.getParameter("description");
@@ -110,30 +118,30 @@ public class TrackController extends HttpServlet {
         Part imagePart = request.getPart("imageFile");
         String uploadDir = getServletContext().getRealPath("");
         Track savedTrack = this.trackFacade.find(id);
-        if(savedTrack==null) return;
-        
+        if (savedTrack == null) {
+            return;
+        }
+
         savedTrack.setTitle(title);
         savedTrack.setDescription(description);
         savedTrack.setCreatedat(new Date());
-        
+
         // Lấy tên file từ phần upload
-    if (musicPart != null && musicPart.getSize() > 0) {  // Kiểm tra dung lượng file
-        System.out.println("Music file: " + musicPart.getSubmittedFileName());
-        String musicFileName = fileService.saveFile(musicPart, uploadDir + "\\assets\\music");
-        savedTrack.setFilename(musicFileName);
-    } else {
-        System.out.println("No music file uploaded.");
-    }
+        if (musicPart != null && musicPart.getSize() > 0) {  // Kiểm tra dung lượng file
+            System.out.println("Music file: " + musicPart.getSubmittedFileName());
+            String musicFileName = fileService.saveFile(musicPart, uploadDir + "\\assets\\track");
+            savedTrack.setFilename(musicFileName);
+        } else {
+            System.out.println("No music file uploaded.");
+        }
 
-    if (imagePart != null && imagePart.getSize() > 0) {  // Kiểm tra dung lượng file
-        System.out.println("Image file: " + imagePart.getSubmittedFileName());
-        String imageFileName = fileService.saveFile(imagePart, uploadDir + "\\assets\\images");
-        savedTrack.setImagename(imageFileName);
-    } else {
-        System.out.println("No image file uploaded.");
-    }
-
-       
+        if (imagePart != null && imagePart.getSize() > 0) {  // Kiểm tra dung lượng file
+            System.out.println("Image file: " + imagePart.getSubmittedFileName());
+            String imageFileName = fileService.saveFile(imagePart, uploadDir + "\\assets\\images");
+            savedTrack.setImagename(imageFileName);
+        } else {
+            System.out.println("No image file uploaded.");
+        }
 
         System.out.print(savedTrack);
         this.trackFacade.edit(savedTrack);
@@ -141,24 +149,44 @@ public class TrackController extends HttpServlet {
         request.setAttribute("track", savedTrack);
         request.getRequestDispatcher("update_music.jsp").forward(request, response);
     }
+
     @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getServletPath();
 
-        if ("/upload".equals(action)) {
+        if ("/add".equals(action)) {
             addTrack(request, response);
+        } else if ("/delete".equals(action)) {
+            deleteTrack(request, response);
+        } else if ("/update".equals(action)) {
+            updateTrack(request, response);
         }
-        else{
-            updateTrack(request,response);
+    }
+
+    private void deleteTrack(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+
+        if (id != null && !id.isEmpty()) {
+            Track track = trackFacade.find(id);
+            if (track != null) {
+                trackFacade.remove(track);
+                request.setAttribute("message", "Xóa bài hát thành công!");
+            } else {
+                request.setAttribute("error", "Không tìm thấy bài hát!");
+            }
+        } else {
+            request.setAttribute("error", "ID bài hát không hợp lệ!");
         }
+
+        response.sendRedirect("home");
     }
 
     @Override
     public String getServletInfo() {
         return "Servlet to handle file upload for music tracks";
     }
-    
+
 //    public String uploadImage(Part part) throws IOException{
 //            String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
 //            String uploadDirPath = getServletContext().getRealPath("") + "\\assets\\images";

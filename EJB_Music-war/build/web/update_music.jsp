@@ -50,7 +50,7 @@
                         <input type="file" id="music-file" name="musicFile" accept="audio/*" class="w-full p-2 border rounded" >
                         
                         <audio id="preview-audio" controls>
-                           <source src="assets/music/${track.filename}" type="audio/mpeg">
+                           <source src="assets/track/${track.filename}" type="audio/mpeg">
                             Trình duyệt của bạn không hỗ trợ phát âm thanh.
                         </audio>
                     </div>

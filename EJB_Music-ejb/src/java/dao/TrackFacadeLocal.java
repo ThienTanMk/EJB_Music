@@ -28,5 +28,6 @@ public interface TrackFacadeLocal {
     List<Track> findRange(int[] range);
 
     int count();
+    List<Track> findByUserId(String userId);
     
 }

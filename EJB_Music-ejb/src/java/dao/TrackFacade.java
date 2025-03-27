@@ -8,6 +8,8 @@ import entity.Track;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import java.util.List;
 
 /**
  *
@@ -27,5 +29,10 @@ public class TrackFacade extends AbstractFacade<Track> implements TrackFacadeLoc
     public TrackFacade() {
         super(Track.class);
     }
-    
+    @Override
+    public List<Track> findByUserId(String userId) {
+        return em.createNamedQuery("Track.findByUserId", Track.class)
+                 .setParameter("userId", userId)
+                 .getResultList();
+    }
 }

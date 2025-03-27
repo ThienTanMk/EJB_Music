@@ -37,6 +37,7 @@ import java.util.UUID;
     @NamedQuery(name = "Track.findByFilename", query = "SELECT t FROM Track t WHERE t.filename = :filename"),
     @NamedQuery(name = "Track.findByCreatedat", query = "SELECT t FROM Track t WHERE t.createdat = :createdat"),
     @NamedQuery(name = "Track.findByImagename", query = "SELECT t FROM Track t WHERE t.imagename = :imagename")})
+    @NamedQuery(name = "Track.findByUserId", query = "SELECT t FROM Track t WHERE t.userid.id = :userId")
 public class Track implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -78,12 +79,12 @@ public class Track implements Serializable {
         this.id = id;
     }
 
-    public Track(String title,String description, String filename, Date createdat, String imageName) {
+    public Track(String title, String description, String filename, Date createdat, String imageName) {
         this.id = generateID();
         this.title = title;
         this.filename = filename;
         this.createdat = createdat;
-        this.imagename=imageName;
+        this.imagename = imageName;
         this.description = description;
         this.userid = new User("user1");
     }
@@ -168,7 +169,7 @@ public class Track implements Serializable {
     public String toString() {
         return "entity.Track[ id=" + id + " ]";
     }
-    
+
     public static String generateID() {
         return UUID.randomUUID().toString();
     }
