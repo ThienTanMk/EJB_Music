@@ -16,5 +16,5 @@ import java.io.IOException;
 public interface FileServiceLocal {
 
     public String saveFile(Part part,String uploadDir) throws IOException;
-    
+    boolean deleteFile(String uploadDir, String fileName);
 }

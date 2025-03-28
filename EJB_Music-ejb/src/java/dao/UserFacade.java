@@ -27,5 +27,15 @@ public class UserFacade extends AbstractFacade<User> implements UserFacadeLocal 
     public UserFacade() {
         super(User.class);
     }
+    public User findByUsername(String username) {
+    try {
+        return getEntityManager()
+            .createNamedQuery("User.findByUsername", User.class)
+            .setParameter("username", username)
+            .getSingleResult();
+    } catch (Exception e) {
+        return null; // Hoặc xử lý exception theo cách bạn muốn
+    }
+}
     
 }

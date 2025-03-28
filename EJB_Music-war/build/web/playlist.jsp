@@ -12,13 +12,20 @@
     <body class="bg-gray-100 text-black">
         <div class="max-w-4xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
             <!-- Header -->
-            <div class="p-4 border-b border-gray-200 flex items-center  gap-138">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
 <!--                <i class="fa-solid fa-music"></i>-->
                 <h1 class="text-2xl font-semibold ">Danh Sách Nhạc</h1>
-                <div>
-                    <a href="/EJB_Music-war/add" class="cursor-pointer justify-between text-lg font-semibold bg-green-500 text-white px-3 py-3 rounded-lg hover:bg-blue-500 flex items-center gap-2">
-                        Thêm bài hát
-                    </a>
+                <div class ="flex gap-2"> 
+                    <div>
+                        <a href="/EJB_Music-war/add" class="cursor-pointer justify-between text-lg font-semibold bg-green-500 text-white px-3 py-3 rounded-lg hover:bg-blue-500 flex items-center gap-2">
+                            Thêm bài hát
+                        </a>
+                    </div>
+                    <div>
+                        <a href="/EJB_Music-war/logout" class="cursor-pointer justify-between text-lg font-semibold bg-green-500 text-white px-3 py-3 rounded-lg hover:bg-blue-500 flex items-center gap-2">
+                            Đăng Xuất
+                        </a>
+                    </div>
                 </div>
             </div>
 

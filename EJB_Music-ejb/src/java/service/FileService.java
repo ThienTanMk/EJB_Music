@@ -11,14 +11,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 
 @Stateless
 public class FileService implements FileServiceLocal {
+       public static String generateID() {
+        return UUID.randomUUID().toString();
+    }
 
     @Override
     public String saveFile(Part part, String uploadDir) throws IOException {
-            String fileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            String fileName =generateID()+ Paths.get(part.getSubmittedFileName()).getFileName().toString();
             
             String path = uploadDir + File.separator + fileName;
             File uploadDirFile = new File(uploadDir);
@@ -36,6 +40,28 @@ public class FileService implements FileServiceLocal {
             }
 
             return fileName;
+    }
+    @Override
+    public boolean deleteFile(String uploadDir, String fileName) {
+        try {
+           
+            File fileToDelete = new File(uploadDir + File.separator + fileName);
+            if (fileToDelete.exists()) {
+                boolean deleted = fileToDelete.delete();
+                if (!deleted) {
+                    System.err.println("Could not delete file: " + fileName);
+                }
+                return deleted;
+            } else {
+                System.err.println("File not found: " + fileName);
+                return false;
+            }
+        } catch (SecurityException e) {
+            // Xử lý trường hợp lỗi bảo mật (không có quyền xóa)
+            System.err.println("Security error deleting file: " + fileName);
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

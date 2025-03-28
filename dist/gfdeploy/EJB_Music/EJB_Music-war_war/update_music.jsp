@@ -42,7 +42,7 @@
 
                 <div>
                     <label for="description" class="block font-medium">Description</label>
-                    <textarea id="description" name="description" value="${track.description}" class="w-full p-2 border rounded min-h-[100px]" placeholder="Enter a description for your music">${track.description}</textarea>
+                    <textarea id="description" name="description" class="w-full p-2 border rounded min-h-[100px]" placeholder="Enter a description for your music">${track.description}</textarea>
                 </div>
                 <div class="flex items-center">
                     <div class="flex flex-col m-2 gap-3">

@@ -3,13 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/entity/Track.java</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/conf/META-INF/glassfish-resources.xml</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/entity/User.java</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/model/AbstractFacade.java</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/conf/persistence.xml</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/model/TrackFacade.java</file>
-            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/model/TrackFacadeLocal.java</file>
+            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/dao/TrackFacade.java</file>
+            <file>file:/D:/Hoc_Tap/EJB_Music/EJB_Music-ejb/src/java/dao/TrackFacadeLocal.java</file>
         </group>
     </open-files>
 </project-private>

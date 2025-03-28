@@ -19,6 +19,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -63,6 +64,12 @@ public class User implements Serializable {
 
     public User(String id, String username, String password) {
         this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+    
+    public User(String username, String password) {
+        this.id = generateID();
         this.username = username;
         this.password = password;
     }
@@ -123,6 +130,10 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "entity.User[ id=" + id + " ]";
+    }
+    
+    public static String generateID() {
+        return UUID.randomUUID().toString();
     }
     
 }
